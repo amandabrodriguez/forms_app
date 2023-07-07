@@ -17,5 +17,9 @@ final appRouter = GoRouter(
       path: PathsConstants.blocCounterScreenRoute,
       builder: (context, state) => const BlocCounterScreen(),
     ),
+    GoRoute(
+      path: PathsConstants.registerScreenRoute,
+      builder: (context, state) => const RegisterScreen(),
+    ),
   ],
 );
