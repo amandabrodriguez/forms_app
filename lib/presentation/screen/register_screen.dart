@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forms_app/presentation/blocs/register_cubic/register_cubit.dart';
 
 import '../widgets/widgets.dart';
 
@@ -11,7 +13,10 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Nuevo Usuario'),
       ),
-      body: _RegisterView(),
+      body: BlocProvider(
+        create: (context) => RegisterCubit(),
+        child: const _RegisterView(),
+      ),
     );
   }
 }
@@ -30,7 +35,7 @@ class _RegisterView extends StatelessWidget {
             children: [
               FlutterLogo(size: 100),
               _RegisterForm(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
             ],
           ),
         ),
@@ -44,24 +49,37 @@ class _RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final registerCubit = context.watch<RegisterCubit>();
+    final username = registerCubit.state.username;
+    final email = registerCubit.state.email;
+    final password = registerCubit.state.password;
+
     return Form(
       child: Column(
         children: [
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Nombre de usuario',
+            onChanged: registerCubit.usernameChanged,
+            errorMessage: username.errorMessage,
           ),
           const SizedBox(height: 10),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Correo electrónico',
+            onChanged: registerCubit.emailChanged,
+            errorMessage: email.errorMessage,
           ),
           const SizedBox(height: 10),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Contraseña',
+            onChanged: registerCubit.passwordChanged,
+            errorMessage: password.errorMessage,
             obscureText: true,
           ),
           const SizedBox(height: 20),
           FilledButton.tonalIcon(
-            onPressed: () {},
+            onPressed: () {
+              registerCubit.onSubmit();
+            },
             icon: const Icon(Icons.save),
             label: const Text('Crear usuario'),
           ),
